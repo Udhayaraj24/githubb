@@ -7,17 +7,24 @@
 </head>
 <body>
   <button id="showAdBtn">Show Ad & Earn Reward</button>
+
   <script>
-    document.getElementById('showAdBtn').onclick = function() {
-      window.showGiga()
-        .then(() => {
-          alert("Reward unlocked!");
-          // Place your reward logic here
-        })
-        .catch(e => {
-          alert("Failed to show ad.");
-          // Handle errors here
-        });
+    document.getElementById('showAdBtn').onclick = function () {
+      // Check if showGiga function is available
+      if (typeof window.showGiga === 'function') {
+        window.showGiga()
+          .then(() => {
+            alert("Reward unlocked!");
+            // TODO: Add your reward logic here
+          })
+          .catch(error => {
+            alert("Failed to show ad.");
+            console.error("Ad error:", error);
+          });
+      } else {
+        alert("Ad system not loaded. Please try again later.");
+        console.warn("showGiga is not defined.");
+      }
     };
   </script>
 </body>
