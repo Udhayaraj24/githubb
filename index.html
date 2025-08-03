@@ -2,28 +2,65 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Giga Ad Integration</title>
-  <script src="https://ad.gigapub.tech/script?id=1198"></script>
+  <title>GigaPub Ad Integration</title>
+
+  <!-- Enhanced script with backup fallback servers -->
+  <script data-project-id="1198">
+    !function(){
+      var s = document.currentScript;
+      var projectId = s.getAttribute('data-project-id') || '1198';
+      var origins = ['https://ad.gigapub.tech', 'https://ru-ad.gigapub.tech'];
+      var i = 0, timeoutHandle, sc;
+
+      function loadScript(){
+        sc = document.createElement('script');
+        sc.async = true;
+        sc.src = origins[i] + '/script?id=' + projectId;
+        clearTimeout(timeoutHandle);
+        timeoutHandle = setTimeout(function(){
+          sc.onload = sc.onerror = null;
+          sc.src = '';
+          if (++i < origins.length) loadScript();
+        }, 15000);
+        sc.onload = function(){ clearTimeout(timeoutHandle); };
+        sc.onerror = function(){ clearTimeout(timeoutHandle); if (++i < origins.length) loadScript(); };
+        document.head.appendChild(sc);
+      }
+      loadScript();
+    }();
+  </script>
 </head>
 <body>
   <button id="showAdBtn">Show Ad & Earn Reward</button>
 
   <script>
     document.getElementById('showAdBtn').onclick = function () {
-      // Check if showGiga function is available
       if (typeof window.showGiga === 'function') {
         window.showGiga()
           .then(() => {
             alert("Reward unlocked!");
-            // TODO: Add your reward logic here
+            // Your reward logic here
           })
           .catch(error => {
             alert("Failed to show ad.");
-            console.error("Ad error:", error);
+            console.error("GigaPub ad error:", error);
           });
       } else {
-        alert("Ad system not loaded. Please try again later.");
-        console.warn("showGiga is not defined.");
+        // Fallback logic: if showGiga never loaded, but AdGigaFallback may exist
+        if (typeof window.AdGigaFallback === 'function') {
+          window.AdGigaFallback()
+            .then(() => {
+              alert("Reward (fallback) unlocked!");
+              // reward logic
+            })
+            .catch(e => {
+              alert("Fallback ad failed.");
+              console.error("Fallback error:", e);
+            });
+        } else {
+          alert("Ad system not loaded. Try again later.");
+          console.warn("showGiga and AdGigaFallback both undefined.");
+        }
       }
     };
   </script>
