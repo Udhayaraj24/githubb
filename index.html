@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Giga Ad Integration</title>
+  <script src="https://ad.gigapub.tech/script?id=1205"></script>
+</head>
+<body>
+  <button id="showAdBtn">Show Ad & Earn Reward</button>
+  <script>
+    document.getElementById('showAdBtn').onclick = function() {
+      window.showGiga()
+        .then(() => {
+          alert("Reward unlocked!");
+          // Place your reward logic here
+        })
+        .catch(e => {
+          alert("Failed to show ad.");
+          // Handle errors here
+        });
+    };
+  </script>
+</body>
+</html>
